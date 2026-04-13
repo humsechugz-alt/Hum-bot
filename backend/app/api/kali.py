@@ -1,6 +1,6 @@
 """Kali Linux Security Brick API endpoints."""
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 
 from app.services.kali_brick import (
     ScanType,
@@ -47,7 +47,7 @@ async def web_scan(url: str = "") -> dict:
 
 
 @router.post("/scan/password")
-async def password_audit(password: str) -> dict:
+async def password_audit(password: str = Body(..., embed=True)) -> dict:
     """Audit password strength (John the Ripper / Hashcat-style).
 
     Evaluates password entropy, complexity, common patterns,

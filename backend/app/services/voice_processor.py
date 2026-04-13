@@ -85,15 +85,16 @@ async def _whisper_api_transcribe(audio_data: bytes, language: str) -> STTResult
             tmp.write(audio_data)
             tmp_path = Path(tmp.name)
 
-        with open(tmp_path, "rb") as audio_file:
-            transcript = await client.audio.transcriptions.create(
-                model="whisper-1",
-                file=audio_file,
-                language=language,
-                response_format="verbose_json",
-            )
-
-        tmp_path.unlink(missing_ok=True)
+        try:
+            with open(tmp_path, "rb") as audio_file:
+                transcript = await client.audio.transcriptions.create(
+                    model="whisper-1",
+                    file=audio_file,
+                    language=language,
+                    response_format="verbose_json",
+                )
+        finally:
+            tmp_path.unlink(missing_ok=True)
 
         return STTResult(
             text=transcript.text,

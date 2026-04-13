@@ -20,8 +20,16 @@ async def transcribe_audio(file: UploadFile, language: str = "en") -> dict:
             detail="File must be an audio file",
         )
 
+    # Check Content-Length header first to reject obviously oversized uploads
+    max_size = 25 * 1024 * 1024  # 25 MB limit
+    if file.size and file.size > max_size:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail="Audio file too large (max 25 MB)",
+        )
+
     audio_data = await file.read()
-    if len(audio_data) > 25 * 1024 * 1024:  # 25 MB limit
+    if len(audio_data) > max_size:
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
             detail="Audio file too large (max 25 MB)",

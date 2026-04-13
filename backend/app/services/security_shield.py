@@ -304,7 +304,11 @@ class SecurityShield:
             "total_threats_last_hour": len(recent),
             "blocked_ips": len(self._blocked_ips),
             "threats_by_type": dict(summary),
-            "highest_severity": max((t.threat_level for t in recent), default="none"),
+            "highest_severity": max(
+                (t.threat_level for t in recent),
+                key=lambda x: {"low": 0, "medium": 1, "high": 2, "critical": 3}.get(x, -1),
+                default="none",
+            ),
         }
 
     @staticmethod
