@@ -14,7 +14,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import auth, automation, chat, health, security, voice
+from app.api import auth, automation, chat, health, kali, medusa, security, voice
 from app.core.config import settings
 from app.middleware.security import SecurityMiddleware
 
@@ -28,6 +28,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     print(f"   AI Model: {settings.OPENAI_MODEL}")
     print(f"   AI Connected: {'Yes' if settings.OPENAI_API_KEY else 'Demo Mode'}")
     print("   Security: AES-256 + TLS 1.3 + Rate Limiting")
+    print("   Medusa Shield: Active (7 detection heads)")
+    print("   Kali Brick: Active (18+ security tools)")
     yield
     # Shutdown
     print(f"👋 {settings.APP_NAME} shutting down...")
@@ -64,6 +66,8 @@ app.include_router(chat.router, prefix=settings.API_PREFIX)
 app.include_router(voice.router, prefix=settings.API_PREFIX)
 app.include_router(security.router, prefix=settings.API_PREFIX)
 app.include_router(automation.router, prefix=settings.API_PREFIX)
+app.include_router(medusa.router, prefix=settings.API_PREFIX)
+app.include_router(kali.router, prefix=settings.API_PREFIX)
 
 
 @app.get("/")
@@ -79,6 +83,8 @@ async def root() -> dict:
             "ai_brain": "Natural conversation with emotion detection",
             "voice": "Speech-to-text and text-to-speech",
             "security": "End-to-end encryption and threat detection",
+            "medusa_shield": "Multi-headed virus detection and neutralization",
+            "kali_brick": "Kali Linux defensive security toolkit",
             "automation": "Smart task scheduling and workflows",
             "revenue": "Wallet system and subscriptions",
             "multilingual": "10+ language support",
